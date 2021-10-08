@@ -10,6 +10,6 @@ The script will create an **image/** folder in the current directory and put the
 
 # Usage
 
-./RedDl.sh -s subreddit
+`./RedDl.sh -s subreddit`
 
 Use the **-h** flag for more precise information.
