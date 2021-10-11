@@ -3,8 +3,8 @@
 #default arguments
 sub=$(mkdir -p images;ls images) #by default update all already downloaded subreddits
 v=2 #verbose level
-imgTreshold=3000 #maximum amount of images to download for a subreddit
-upvoteTreshold=0.8 #minimum upvote ratio
+imgThreshold=3000 #maximum amount of images to download for a subreddit
+upvoteThreshold=0.8 #minimum upvote ratio
 
 #check flags
 while [ $# -gt 0 ]; do
@@ -16,7 +16,7 @@ while [ $# -gt 0 ]; do
             echo "name of each subreddit you download from. Inside these folders will be all the"
             echo "images from the image and gallery posts of this subreddit. If no subreddit is"
             echo "specified when calling RedDL+, updates the contents of folders of the subreddits"
-            echo "you already downloaded from."
+            echo "you already downloaded from. Images are downloaded by date (most recent first)."
             echo ""
             echo "OPTIONS:"
             echo " -s, --subreddit SUBREDDIT     Target SUBREDDIT. If not specified, and"
@@ -24,11 +24,20 @@ while [ $# -gt 0 ]; do
             echo "                                downloaded subreddits."
             echo " -v, --verbose <0|1|2>         Verbose level. No output at 0, subreddit"
             echo "                                name at 1, subreddit and image name at 2."
-            echo "                                DEFAUT: 2"
+            echo "                                DEFAULT: 2"
+            echo " -i, --image IMGTHRESHOLD      Maximum amount of images to download."
+            echo "                                DEFAULT: 3000"
+            echo " -u, --upvote UPVOTETHRESHOLD  Minimum upvote ratio for an image to be"
+            echo "                                downloaded. Useful to filter out trash"
+            echo "                                DEFAULT: 0.8"
             echo ""
             echo "Examples:"
             echo " ./RedDL+.sh -s kitty          Download the images from the r/kitty"
-            echo "                                subreddit to images/kitty."
+            echo "                                subreddit to images/kitty/."
+            echo " ./RedDL+.sh -s kitty -i 500   Download the 500 most recent images"
+            echo "                                 from the r/kitty subreddit."
+            echo " ./RedDL+.sh -s kitty -u 0.5   Download the images from the r/kitty"
+            echo "                                 with more than 50% upvote ratio."
             echo " ./RedDL+.sh                   Download the images from all of the"
             echo "                                subreddits in images/."
             echo " ./RedDL+.sh -v 1              Same as above without printing image names."
@@ -50,6 +59,22 @@ while [ $# -gt 0 ]; do
             esac
             shift
             ;;
+        -i|--images)
+            shift
+            case "$1" in
+                *[!0-9]*) echo "$1 is not an integer!";exit 1;;
+                *) imgThreshold=$1;;
+            esac
+            shift
+            ;;
+        -u|--upvotes)
+            shift
+            case "$1" in
+                0.[0-9]|0.[0-9][0-9]) upvoteThreshold=$1;;
+                *) echo "$1 is not a number between 0 and 1 (2 digits max)!";exit 1;;
+            esac
+            shift
+            ;;
         *)
             echo "$1 is not a recognized flag! HELP: ./RedDL+.sh -h"
             exit 1
@@ -67,23 +92,24 @@ if [ $(c() { echo $#; };c $sub;unset -f c) -gt 1 ] && [ $v -ge 1 ];then
     echo "HELP: ./RedDL+.sh -h"
 fi
 
+batchSize=$([ $imgThreshold -lt 100 ] && echo "$imgThreshold" || echo 100)
+
 for subreddit in $sub;do
     mkdir -p "images/$subreddit"
-    onDiskInit=$(ls images/$subreddit | wc -l)
     npics=-1
     before=""
     if [ $v -ge 1 ];then
         printf "Downloading r/$subreddit pics...\n"
     fi
     processed=0
-    while [ $processed -le $imgTreshold ] && [ $npics -ne 0 ];do
-        req=$(wget -q -O - "https://api.pushshift.io/reddit/submission/search/?subreddit=$subreddit&size=100&fields=upvote_ratio,created_utc,url,title,id,post_hint,is_gallery,media_metadata,removed_by_category&before=$before" 2>&1) #get a batch of 100 posts (the maximum possible in one request)
+    while [ $processed -le $imgThreshold ] && [ $npics -ne 0 ];do
+        req=$(wget -q -O - "https://api.pushshift.io/reddit/submission/search/?subreddit=$subreddit&size=$batchSize&fields=upvote_ratio,created_utc,url,title,id,post_hint,is_gallery,media_metadata,removed_by_category&before=$before" 2>&1) #get a batch of 100 posts (the maximum possible in one request)
         npics=$(echo $req | jq -r ".[] | length")
         i=0
         while [ $i -lt $npics ];do #for each post
             removed=$(echo $req | jq -r ".data[$i].removed_by_category?")
             upvoteRatio=$(echo $req | jq -r ".data[$i].upvote_ratio?")
-            if [ "$removed" == "null" ] && [ $(echo "$upvoteRatio>$upvoteTreshold" | bc) -eq 1 ];then
+            if [ "$removed" == "null" ] && [ $(echo "$upvoteRatio>$upvoteThreshold" | bc) -eq 1 ];then
                 if [ $(echo $req | jq -r ".data[$i].post_hint?") == "image" ];then #if it is a standard image post
                     url=$(echo $req | jq -r ".data[$i].url")
                     ext=${url: -4:4}
@@ -131,11 +157,10 @@ for subreddit in $sub;do
     find images/$subreddit -size 0 -delete #delete empty images that may have been downloaded
     if [ $v -ge 1 ];then
         tput cuu 1
-        printf "\rr/$subreddit done ($processed pics, $(($processed-$onDiskInit)) new)\033[K\n\033[K"
+        printf "\rr/$subreddit done ($processed pics)\033[K\n\033[K"
     fi
 done
 
 #TODO
 #some error message appears sometimes
-#make imgTreshold a script parameter
 #try to handle porn ads when downloading from badly moderated or old subs
