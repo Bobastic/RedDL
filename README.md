@@ -18,7 +18,7 @@ Use the **-h** flag for a list of all commands.
 
 Works the same as **RedDL** except it uses the Pushshift API which means you can get *all* the images from a subreddit. Note that you thus can't specify a sort order.
 
-I set a maximum image amount threshold at the beginning of the code as well as a minimum upvote ratio for an image to be downloaded to try to *filter out the trash*. Edit these as you want.
+I set a maximum image amount threshold at the beginning of the script as well as a minimum upvote ratio for an image to be downloaded to try to *filter out the trash*. Edit these as you want.
 
 ## Usage
 
