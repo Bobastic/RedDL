@@ -20,7 +20,7 @@ Works the same as **RedDL** except it uses the Pushshift API which means you can
 
 You can set a maximum image amount threshold as well as a minimum upvote ratio for an image to be downloaded to try to *filter out the trash*.
 
-**RedDL+** is also much faster than **RedDL**.
+**RedDL+** is much faster than **RedDL** but you also get some *lower quality* images if you are interested in poorly moderated subreddits. When you get to posts that are years old, you can sometimes find porn ads or this kind of stuff. I tried to address the issue with the upvote threshold but it's not perfect.
 
 ## Usage
 
