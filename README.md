@@ -8,8 +8,6 @@ There is a thousand image limitation because I use the native Reddit API. If you
 
 The script will create an **image/** folder in the current directory and put the downloaded images in a dedicated directory in **images/**.
 
-**RedDL** is also faster than **RedDL+**.
-
 ## Usage
 
 `./RedDL.sh -s subreddit`
@@ -20,7 +18,9 @@ Use the **-h** flag for a list of all flags.
 
 Works the same as **RedDL** except it uses the Pushshift API which means you can get *all* the images from a subreddit. Note that you thus can't specify a sort order.
 
-I set a maximum image amount threshold at the beginning of the script as well as a minimum upvote ratio for an image to be downloaded to try to *filter out the trash*. Edit these as you want.
+You can set a maximum image amount threshold as well as a minimum upvote ratio for an image to be downloaded to try to *filter out the trash*.
+
+**RedDL+** is also much faster than **RedDL**.
 
 ## Usage
 
