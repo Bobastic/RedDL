@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
             echo " -i, --image IMGTHRESHOLD      Maximum amount of images to download."
             echo "                                DEFAULT: 3000"
             echo " -u, --upvote UPVOTETHRESHOLD  Minimum upvote ratio for an image to be"
-            echo "                                downloaded. Useful to filter out trash"
+            echo "                                downloaded. Useful to filter out trash."
             echo "                                DEFAULT: 0.8"
             echo ""
             echo "Examples:"
