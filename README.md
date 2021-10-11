@@ -12,4 +12,4 @@ The script will create an **image/** folder in the current directory and put the
 
 `./RedDL.sh -s subreddit`
 
-Use the **-h** flag for more precise information.
+Use the **-h** flag for a list of all commands.
