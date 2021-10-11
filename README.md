@@ -25,3 +25,7 @@ I set a maximum image amount threshold at the beginning of the code as well as a
 `./RedDL+.sh -s subreddit`
 
 Use the **-h** flag for a list of all commands.
+
+# Requirements
+
+All you need is `bash`, `wget` and `jq`.
