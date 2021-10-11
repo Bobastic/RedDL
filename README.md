@@ -8,6 +8,8 @@ There is a thousand image limitation because I use the native Reddit API. If you
 
 The script will create an **image/** folder in the current directory and put the downloaded images in a dedicated directory in **images/**.
 
+**RedDL** is also faster than **RedDL+**.
+
 ## Usage
 
 `./RedDL.sh -s subreddit`
