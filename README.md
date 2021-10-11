@@ -12,7 +12,7 @@ The script will create an **image/** folder in the current directory and put the
 
 `./RedDL.sh -s subreddit`
 
-Use the **-h** flag for a list of all commands.
+Use the **-h** flag for a list of all flags.
 
 # RedDL+
 
@@ -24,7 +24,7 @@ I set a maximum image amount threshold at the beginning of the script as well as
 
 `./RedDL+.sh -s subreddit`
 
-Use the **-h** flag for a list of all commands.
+Use the **-h** flag for a list of all flags.
 
 # Requirements
 
